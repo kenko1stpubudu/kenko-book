@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kenko 1st Organic — E-Book</title>
+<link rel="stylesheet" href="_ds/organic-af5e0376-4480-44f1-807e-45ff31406529/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Noto+Serif+Sinhala:wght@500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Serif+Tamil:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap">
+<script src="image-slot.js"></script>
+<script src="book-content.js"></script>
+<style>
+:root{--paper:#f8f0e0;--ink:var(--color-text);--si-body:"Noto Sans Sinhala","Noto Sans Tamil","Noto Sans JP";--si-head:"Noto Serif Sinhala","Noto Serif Tamil","Noto Serif JP"}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(120% 120% at 50% 0%,#efe2c9 0%,#e6d7bb 60%,#dccaa8 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;font-family:var(--font-body),var(--si-body),system-ui,sans-serif}
+h1,h2,h3,h4{font-family:var(--font-heading),var(--si-head),serif}
+/* — stage — */
+.reader{display:flex;flex-direction:column;align-items:center;gap:var(--space-2);width:100%;height:100vh;padding:14px 18px 20px;box-sizing:border-box}
+.langbar{display:flex;gap:7px;flex:0 0 auto;flex-wrap:wrap;justify-content:center}
+.langbtn{font-family:var(--font-body),var(--si-body);font-size:13px;font-weight:600;padding:6px 15px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:transparent;color:var(--color-accent-800);cursor:pointer;transition:background .15s,color .15s,border-color .15s;line-height:1.1}
+.langbtn:hover{background:var(--color-accent-100)}
+.langbtn.active{background:var(--color-accent-500);border-color:var(--color-accent-500);color:#fff}
+.stage{position:relative;flex:1;width:100%;display:flex;align-items:center;justify-content:center;perspective:2600px;min-height:0}
+.book{position:relative;height:100%;aspect-ratio:5/7;max-height:760px;max-width:96vw;transform-style:preserve-3d}
+@media(max-aspect-ratio:5/7){.book{width:96vw;height:auto;max-height:100%}}
+/* — a sheet — */
+.sheet{position:absolute;inset:0;border-radius:6px var(--radius-md) var(--radius-md) 6px;background:var(--paper);box-shadow:var(--shadow-lg),inset 14px 0 26px -18px rgba(64,35,16,.45);overflow:hidden}
+.sheet.under{z-index:1}
+.sheet.top{z-index:3}
+.sheet.turning{z-index:4;transform-origin:left center;transition:transform .62s cubic-bezier(.4,.02,.25,1);box-shadow:var(--shadow-lg)}
+.sheet.turning.go{transform:rotateY(-172deg)}
+.sheet.turning.back{transform:rotateY(-172deg);transition:none}
+.sheet.turning.back.go{transform:rotateY(0deg);transition:transform .62s cubic-bezier(.4,.02,.25,1)}
+.sheet .spine{position:absolute;top:0;bottom:0;left:0;width:26px;background:linear-gradient(90deg,rgba(64,35,16,.20),transparent);pointer-events:none;z-index:5}
+.turnshade{position:absolute;inset:0;background:linear-gradient(90deg,transparent 40%,rgba(64,35,16,.28));opacity:0;pointer-events:none;z-index:6}
+.sheet.turning.go .turnshade{opacity:1;transition:opacity .62s}
+/* — page content — */
+.pg{position:absolute;inset:0;padding:clamp(24px,4vh,50px) clamp(26px,3.8vh,54px);display:flex;flex-direction:column;overflow:hidden}
+.pg .num{position:absolute;bottom:16px;right:26px;font-size:11px;letter-spacing:.14em;color:color-mix(in srgb,var(--ink) 42%,transparent)}
+.pg .num.l{right:auto;left:26px}
+.kick{font-family:var(--font-body),var(--si-body);font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700)}
+.pg h1{font-size:clamp(28px,5.2vh,50px);line-height:1.08;margin:0}
+.pg h2{font-size:clamp(23px,4vh,36px);line-height:1.1;margin:0 0 var(--space-2)}
+.pg h3{font-size:clamp(17px,2.6vh,22px);margin:0 0 6px}
+.pg p{font-size:clamp(13px,1.9vh,16px);line-height:1.6;margin:0 0 var(--space-3);text-wrap:pretty;color:color-mix(in srgb,var(--ink) 88%,transparent)}
+.lead{font-size:clamp(14px,2.15vh,18px)!important;color:var(--ink)!important}
+.slotwrap{position:relative;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-md)}
+.blob{border-radius:46% 54% 55% 45%/52% 44% 56% 48%}
+.spill{margin-top:auto}
+.rule{height:2px;width:52px;background:var(--color-accent);border:0;border-radius:2px;margin:var(--space-2) 0 var(--space-3)}
+/* cover */
+.cover{background:linear-gradient(160deg,#8c491a 0%,#b2622d 55%,#c67139 100%);color:#fdf6ea}
+.cover h1,.cover h2{color:#fdf6ea}
+.cover .kick{color:var(--color-accent-200)}
+.cover-art{position:absolute;inset:0;opacity:.9}
+.cover-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(64,35,16,.15) 0%,rgba(64,35,16,.62) 62%,rgba(64,35,16,.82) 100%);pointer-events:none}
+.cover-body{position:relative;z-index:2;margin-top:auto}
+/* chapter opener */
+.opener{background:var(--color-accent-2-100)}
+.bignum{font-family:var(--font-heading),var(--si-head);font-size:clamp(72px,14vh,150px);line-height:.8;color:var(--color-accent-2-300)}
+/* contents */
+.toc a{display:flex;justify-content:space-between;align-items:baseline;gap:12px;text-decoration:none;color:var(--ink);padding:8px 0;border-bottom:1px dashed var(--color-divider);cursor:pointer}
+.toc a:hover{color:var(--color-accent-700)}
+.toc .t{font-family:var(--font-heading),var(--si-head);font-size:clamp(14px,2.2vh,19px)}
+.toc .d{flex:1;border-bottom:1px dotted color-mix(in srgb,var(--ink) 30%,transparent);transform:translateY(-4px)}
+.toc .p{font-size:13px;color:var(--color-accent-700);font-weight:700}
+/* step cards */
+.cardgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2);margin-top:var(--space-2)}
+.hcard{background:var(--color-surface);border-radius:var(--radius-md);padding:11px 13px}
+.hcard .n{font-family:var(--font-heading),var(--si-head);font-size:clamp(14px,2vh,17px);margin-bottom:2px}
+.hcard p{font-size:clamp(11px,1.6vh,13px)!important;line-height:1.45;margin:0}
+.quote{background:var(--color-accent-900);color:#fdf6ea;display:flex;flex-direction:column;justify-content:center}
+.quote h2{color:#fdf6ea;font-size:clamp(23px,4.4vh,38px);line-height:1.2}
+.quote .kick{color:var(--color-accent-300)}
+/* controls */
+.controls{display:flex;align-items:center;gap:var(--space-3);flex:0 0 auto}
+.pageind{font-family:var(--font-body);font-size:13px;letter-spacing:.1em;color:color-mix(in srgb,var(--ink) 55%,transparent);min-width:78px;text-align:center}
+.btn-icon{width:44px;height:44px;border-radius:999px}
+.hint{font-size:11px;letter-spacing:.06em;color:color-mix(in srgb,var(--ink) 45%,transparent);text-align:center}
+.nav-zone{position:absolute;top:0;bottom:0;width:26%;z-index:7;cursor:pointer}
+.nav-zone.prev{left:0}.nav-zone.next{right:0}
+a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-900)}
+.sheet .wm{position:absolute;top:53%;left:50%;width:84%;transform:translate(-50%,-50%);opacity:.05;pointer-events:none;z-index:0}
+.logo-plate{position:absolute;top:clamp(18px,4vh,34px);left:50%;transform:translateX(-50%);z-index:3;background:rgba(253,246,234,.94);border-radius:999px;padding:12px 20px;box-shadow:var(--shadow-md)}
+.logo-plate img{height:clamp(54px,10vh,96px);width:auto;display:block}
+.corner-logo{position:absolute;top:20px;right:22px;height:clamp(28px,4.8vh,40px);width:auto;opacity:.92;z-index:4;pointer-events:none}
+.corner-logo.onlight{opacity:.85}
+.pg.item{padding:clamp(16px,2.6vh,32px) clamp(22px,3vh,42px)}
+.pg.item .fit{position:absolute;inset:clamp(16px,2.6vh,32px) clamp(22px,3vh,42px);display:flex;flex-direction:column;transform-origin:top center}
+.pg .fitp{position:absolute;inset:0;padding:clamp(24px,4vh,50px) clamp(26px,3.8vh,54px) clamp(40px,6vh,58px);display:flex;flex-direction:column;transform-origin:top center;box-sizing:border-box}
+.item .en-name{font-family:var(--font-body);font-style:italic;color:var(--color-accent-2-700);font-size:clamp(12px,1.8vh,15px);margin-top:2px}
+.item .item-photo{position:relative;width:100%;height:24%;min-height:112px;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm);margin:9px 0 11px}
+.item .item-sec{margin-bottom:7px}
+.item .lab{font-family:var(--font-body);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-2-700);display:flex;align-items:center;gap:7px;margin-bottom:3px}
+.item .lab::before{content:"";width:13px;height:13px;border-radius:4px;background:var(--color-accent-2-500);flex:0 0 auto}
+.item .lab.use{color:var(--color-accent-700)}
+.item .lab.use::before{background:var(--color-accent-500)}
+.item h2{font-size:clamp(20px,3.3vh,30px);line-height:1.08}
+.item p{font-size:clamp(11.5px,1.72vh,14.5px);margin:0;line-height:1.44;color:color-mix(in srgb,var(--ink) 88%,transparent)}
+.item.long p{font-size:clamp(10.5px,1.45vh,12.5px);line-height:1.32}
+.item.long .item-photo{height:18%;min-height:78px;margin:7px 0 9px}
+.item.long .item-sec{margin-bottom:4px}
+.item.long h2{font-size:clamp(18px,2.9vh,26px)}
+.item.long .lab{font-size:10px;margin-bottom:2px}
+.item.xlong p{font-size:clamp(10px,1.34vh,11.5px);line-height:1.28}
+.item.xlong .item-photo{height:14%;min-height:60px;margin:6px 0 7px}
+.item.xlong h2{font-size:clamp(17px,2.7vh,23px)}
+.item-tags{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 0}
+.item.long .item-tags{margin-top:4px}
+.itag{font-family:var(--font-body),var(--si-body);font-size:11px;font-weight:600;padding:4px 11px;border-radius:999px;background:var(--color-accent-2-200);color:var(--color-accent-2-800)}
+.item.itf .itag{background:var(--color-accent-200);color:var(--color-accent-800)}
+.item-tip{margin-top:auto;background:var(--color-surface);border-radius:var(--radius-md);padding:7px 12px;font-size:clamp(10.5px,1.5vh,12.5px);line-height:1.4;color:color-mix(in srgb,var(--ink) 82%,transparent)}
+.item.long .item-tip{margin-top:7px;padding:6px 11px;font-size:clamp(10px,1.4vh,11.5px);line-height:1.34}
+.item-tip span{display:block;font-family:var(--font-heading),var(--si-head);font-size:10.5px;letter-spacing:.04em;color:var(--color-accent-700);margin-bottom:2px}
+.contact{margin-top:16px;display:flex;flex-direction:column;gap:8px;font-size:clamp(12px,1.8vh,15px)}
+.contact div{color:#f0fae1;border-bottom:1px dashed rgba(240,250,225,.35);padding-bottom:6px}
+.contact span{font-family:var(--font-heading),var(--si-head);color:var(--color-accent-2-200);margin-right:8px}
+.pg.photo{padding:0}
+.fullbleed{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.photo-cap{position:absolute;left:0;right:0;bottom:0;padding:26px 28px 30px;background:linear-gradient(0deg,rgba(45,28,12,.9),rgba(45,28,12,.5) 55%,transparent);color:#fdf6ea;z-index:2}
+.photo-cap .kick{color:var(--color-accent-200)}
+.photo-cap h3{color:#fdf6ea;font-size:clamp(19px,3.1vh,28px);margin:5px 0 5px;line-height:1.12}
+.photo-cap p{color:#f1e9dc;font-size:clamp(12px,1.8vh,15px);line-height:1.46;margin:0;max-width:92%}
+.pg.photo .num{color:rgba(253,246,234,.75);z-index:2}
+.photo-open{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(26px,4vh,52px) clamp(28px,4vh,56px);z-index:2;color:#fdf6ea}
+.photo-open .kick{color:var(--color-accent-200)}
+.photo-open h1{color:#fdf6ea}
+.photo-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(45,28,12,.28) 0%,rgba(45,28,12,.35) 45%,rgba(45,28,12,.82) 100%);z-index:1}
+:root{--seed:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38'%3E%3Cg fill='%237a8a5e' fill-opacity='0.14'%3E%3Cpath d='M9 6c3 0 5 2 5 5-3 0-5-2-5-5z'/%3E%3Ccircle cx='27' cy='22' r='2.2'/%3E%3C/g%3E%3C/svg%3E")}
+.item-photo,.slotwrap{background-color:var(--color-accent-2-100);background-image:var(--seed)}
+.pg.opener{overflow:hidden}
+.pg.opener::before{content:"";position:absolute;width:62%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.34);top:-14%;right:-14%;pointer-events:none;z-index:0}
+.pg.opener>*:not(.corner-logo):not(.num):not(.fitp){position:relative;z-index:1}.pg.opener>.corner-logo,.pg.opener>.num,.pg.opener>.fitp{z-index:1}
+.pg.opener .bignum{position:relative;z-index:1}
+/* search */
+.iconbtn{width:44px;height:44px;border-radius:999px;font-size:18px}
+.search-ov{position:fixed;inset:0;background:rgba(45,28,12,.55);display:none;align-items:flex-start;justify-content:center;z-index:60;padding:6vh 16px}
+.search-ov.open{display:flex}
+.search-panel{background:var(--paper);border-radius:var(--radius-lg);width:min(560px,94vw);max-height:82vh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);overflow:hidden}
+.search-head{display:flex;gap:8px;padding:14px;border-bottom:1px solid var(--color-divider)}
+.search-input{flex:1;font-family:var(--font-body),var(--si-body);font-size:16px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--color-accent-300);background:#fff;color:var(--ink);outline:none}
+.search-input:focus{border-color:var(--color-accent)}
+.search-results{overflow:auto;padding:8px 8px 12px}
+.sres{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-md);cursor:pointer;text-decoration:none;color:var(--ink)}
+.sres:hover{background:var(--color-accent-100)}
+.sres .nm{font-family:var(--font-heading),var(--si-head);font-size:15px}
+.sres .tg{font-size:11px;color:var(--color-accent-2-700);font-style:italic}
+.sres .cat{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--color-accent-2-200);color:var(--color-accent-2-800)}
+.sres.f .cat{background:var(--color-accent-200);color:var(--color-accent-800)}
+.sres .pn{margin-left:auto;font-weight:700;color:var(--color-accent-700);font-size:13px}
+.search-empty{padding:20px;text-align:center;color:color-mix(in srgb,var(--ink) 50%,transparent)}
+.quote-wm{opacity:1;filter:brightness(.42) saturate(1.05);object-position:50% 62%}.pg.quote>*:not(.fullbleed):not(.corner-logo):not(.num){position:relative;z-index:1}.pg.quote>.corner-logo,.pg.quote>.num{z-index:1}
+</style>
+<meta name="ext-resource-dependency" content="assets/kenko-logo.png" data-resource-id="logo">
+<meta name="ext-resource-dependency" content="assets/farm/tea.jpg" data-resource-id="tea">
+<meta name="ext-resource-dependency" content="assets/farm/greenhouse1.jpg" data-resource-id="greenhouse1">
+<meta name="ext-resource-dependency" content="assets/farm/seedlings.jpg" data-resource-id="seedlings">
+<meta name="ext-resource-dependency" content="assets/farm/beetroot.jpg" data-resource-id="beetroot">
+<meta name="ext-resource-dependency" content="assets/farm/greenhouse2.jpg" data-resource-id="greenhouse2">
+<meta name="ext-resource-dependency" content="assets/farm/papaya.jpg" data-resource-id="papaya">
+<meta name="ext-resource-dependency" content="assets/farm/papaya_banana.jpg" data-resource-id="papaya_banana">
+<meta name="ext-resource-dependency" content="assets/farm/corn.jpg" data-resource-id="corn">
+<meta name="ext-resource-dependency" content="assets/ch/ch1.jpg" data-resource-id="ch1">
+<meta name="ext-resource-dependency" content="assets/items/food_1.jpg" data-resource-id="it_food_1">
+<meta name="ext-resource-dependency" content="assets/items/food_2.jpg" data-resource-id="it_food_2">
+<meta name="ext-resource-dependency" content="assets/items/food_3.jpg" data-resource-id="it_food_3">
+<meta name="ext-resource-dependency" content="assets/items/food_4.jpg" data-resource-id="it_food_4">
+<meta name="ext-resource-dependency" content="assets/items/food_5.jpg" data-resource-id="it_food_5">
+<meta name="ext-resource-dependency" content="assets/items/food_6.jpg" data-resource-id="it_food_6">
+<meta name="ext-resource-dependency" content="assets/items/food_7.jpg" data-resource-id="it_food_7">
+<meta name="ext-resource-dependency" content="assets/items/food_8.jpg" data-resource-id="it_food_8">
+<meta name="ext-resource-dependency" content="assets/items/food_9.jpg" data-resource-id="it_food_9">
+<meta name="ext-resource-dependency" content="assets/items/food_10.jpg" data-resource-id="it_food_10">
+<meta name="ext-resource-dependency" content="assets/items/food_11.jpg" data-resource-id="it_food_11">
+<meta name="ext-resource-dependency" content="assets/items/food_12.jpg" data-resource-id="it_food_12">
+<meta name="ext-resource-dependency" content="assets/items/food_13.jpg" data-resource-id="it_food_13">
+<meta name="ext-resource-dependency" content="assets/items/herb_5.jpg" data-resource-id="it_herb_5">
+<meta name="ext-resource-dependency" content="assets/items/herb_6.jpg" data-resource-id="it_herb_6">
+<meta name="ext-resource-dependency" content="assets/items/herb_7.jpg" data-resource-id="it_herb_7">
+<meta name="ext-resource-dependency" content="assets/items/herb_8.jpg" data-resource-id="it_herb_8">
+<meta name="ext-resource-dependency" content="assets/items/herb_9.jpg" data-resource-id="it_herb_9">
+<meta name="ext-resource-dependency" content="assets/items/herb_10.jpg" data-resource-id="it_herb_10">
+<meta name="ext-resource-dependency" content="assets/items/herb_11.jpg" data-resource-id="it_herb_11">
+<meta name="ext-resource-dependency" content="assets/items/herb_12.jpg" data-resource-id="it_herb_12">
+<meta name="ext-resource-dependency" content="assets/items/herb_13.jpg" data-resource-id="it_herb_13">
+<meta name="ext-resource-dependency" content="assets/items/herb_14.jpg" data-resource-id="it_herb_14">
+<meta name="ext-resource-dependency" content="assets/items/herb_15.jpg" data-resource-id="it_herb_15">
+<meta name="ext-resource-dependency" content="assets/items/herb_16.jpg" data-resource-id="it_herb_16">
+<meta name="ext-resource-dependency" content="assets/items/herb_17.jpg" data-resource-id="it_herb_17">
+<meta name="ext-resource-dependency" content="assets/items/herb_18.jpg" data-resource-id="it_herb_18">
+<meta name="ext-resource-dependency" content="assets/items/herb_19.jpg" data-resource-id="it_herb_19">
+<meta name="ext-resource-dependency" content="assets/items/herb_1.jpg" data-resource-id="it_herb_1">
+<meta name="ext-resource-dependency" content="assets/items/herb_2.jpg" data-resource-id="it_herb_2">
+<meta name="ext-resource-dependency" content="assets/items/herb_3.jpg" data-resource-id="it_herb_3">
+<meta name="ext-resource-dependency" content="assets/items/herb_4.jpg" data-resource-id="it_herb_4">
+<meta name="ext-resource-dependency" content="assets/ch/cabbage.jpg" data-resource-id="cabbage">
+<meta name="ext-resource-dependency" content="assets/ch/kitchen.jpg" data-resource-id="kitchen">
+<script>window.__R=(k,p)=>(window.__resources&&window.__resources[k])||p;</script>
+</head>
+<body>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#56633f"/><path d="M50 28c14 6 20 20 12 36-4 8-12 10-12 10s-8-2-12-10c-8-16-2-30 12-36z" fill="#f8f0e0"/><path d="M50 36v36" stroke="#56633f" stroke-width="3"/></svg></template>
+<div class="reader">
+  <div class="langbar" id="langbar"></div>
+  <div class="stage">
+    <div class="book" id="book">
+      <div class="sheet under" id="under"><img class="wm" src="assets/kenko-logo.png" alt=""><div class="spine"></div></div>
+      <div class="sheet top" id="top"><img class="wm" src="assets/kenko-logo.png" alt=""><div class="spine"></div></div>
+      <div class="sheet turning" id="turn"><img class="wm" src="assets/kenko-logo.png" alt=""><div class="turnshade"></div><div class="spine"></div></div>
+      <div class="nav-zone prev" id="zPrev"></div>
+      <div class="nav-zone next" id="zNext"></div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="btn btn-secondary btn-icon" id="prev" aria-label="Previous">‹</button>
+    <div class="pageind" id="ind">1 / 1</div>
+    <button class="btn btn-primary btn-icon" id="next" aria-label="Next">›</button>
+    <button class="btn btn-secondary iconbtn" id="searchBtn" aria-label="Search">⌕</button>
+  </div>
+  <div class="hint" id="hint"></div>
+</div>
+<div class="search-ov" id="searchOv">
+  <div class="search-panel">
+    <div class="search-head"><input id="searchInput" class="search-input" type="text"><button class="btn btn-ghost iconbtn" id="searchClose" aria-label="Close">✕</button></div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script>
+const LANG_ORDER=['si','ja','en','ta'];
+const LANG_NAMES={si:'සිංහල',en:'English',ta:'தமிழ்',ja:'日本語'};
+let lang='si';
+try{const sl=localStorage.getItem('ebook_lang');if(sl&&window.BOOK&&BOOK[sl])lang=sl;}catch(e){}
+function L(){return BOOK[lang]||BOOK.en;}
+const num=(n,side='')=>`<div class="num ${side}">${n}</div>`;
+
+function itemPage(it,enName,no,cat,lbl){
+  const d=L(); const label=cat==='herb'?d.itemHerbCat:d.itemFoodCat;
+  const bodyLen=(it.b||'').length+(it.u||'').length;
+  let long='';
+  if(lang==='ta'||lang==='ja'){long=' long';if(bodyLen>150)long=' long xlong';}
+  return `<div class="pg item ${cat==='herb'?'ith':'itf'}${long}">
+    <img class="corner-logo onlight" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="fit">
+    <div class="item-head">
+      <div class="kick">${label} · ${String(no).padStart(2,'0')}</div>
+      <h2>${it.name}</h2>
+      <div class="en-name">${enName}</div>
+      <div class="item-tags">${(it.t||[]).map(x=>`<span class="itag">${x}</span>`).join('')}</div>
+    </div>
+    <div class="item-photo">${ITEM_IMG.has(cat+'_'+no)?`<img src="${__R('it_'+cat+'_'+no,'assets/items/'+cat+'_'+no+'.jpg')}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">`:`<image-slot id="cat_${cat}_${no}" shape="rect" placeholder="${d.photoPh}"></image-slot>`}</div>
+    <div class="item-sec"><div class="lab">${d.labBenefit}</div><p>${it.b}</p></div>
+    <div class="item-sec"><div class="lab use">${d.labUse}</div><p>${it.u}</p></div>
+    ${it.k?`<div class="item-tip"><span>${d.labTip}</span>${it.k}</div>`:''}
+    </div>
+    <div class="num ${lbl%2?'':'l'}">${lbl}</div>
+  </div>`;
+}
+const ITEM_IMG=new Set(["herb_1","herb_2","herb_3","herb_4","food_1","food_2","food_3","food_4","food_5","food_6","food_7","food_8","food_9","food_10","food_11","food_12","food_13","herb_5","herb_6","herb_7","herb_8","herb_9","herb_10","herb_11","herb_12","herb_13","herb_14","herb_15","herb_16","herb_17","herb_18","herb_19"]);
+const CH_IMG={ch1art:['ch1','assets/ch/ch1.jpg','50% 45%'],ch2art:['papaya','assets/farm/papaya.jpg','30% 50%'],ch3art:['beetroot','assets/farm/beetroot.jpg','55% 40%'],ch4art:['corn','assets/farm/corn.jpg','40% 70%'],ch5art:['greenhouse2','assets/farm/greenhouse2.jpg','45% 55%']};
+function chArt(id,w){const c=CH_IMG[id];return `<div class="slotwrap blob" style="width:${w||58}%;aspect-ratio:1;margin-top:auto;flex-shrink:0">${c?`<img src="${__R(c[0],c[1])}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:${c[2]};display:block">`:`<image-slot id="${id}" shape="rect" placeholder="${L().photoPh}"></image-slot>`}</div>`;}
+function openerHTML(bn,label,title,sub,slotId,pnum,subColor,bg){
+  const d=L();
+  return `<div class="pg opener" style="padding:0;${bg?`background:${bg}`:''}"><div class="fitp">
+    <img class="corner-logo onlight" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="bignum">${bn}</div>
+    <div class="kick" style="margin-top:6px">${label}</div>
+    <h1 style="margin-top:6px">${title}</h1>
+    <p style="margin-top:10px;color:${subColor||'var(--color-accent-2-700)'};font-style:italic">${sub}</p>
+    ${chArt(slotId)}
+    </div>${num(pnum,'l')}
+  </div>`;
+}
+function buildPages(){
+  const d=L(); const P=[]; window.__idx=[];
+  P.push(`<div class="pg cover">
+    <div class="cover-art"><img class="fullbleed" src="${__R('tea','assets/farm/tea.jpg')}" alt="" style="object-position:4% 45%"></div>
+    <div class="cover-scrim"></div>
+    <div class="logo-plate"><img src="${__R('logo','assets/kenko-logo.png')}" alt="Kenko 1st Organic"></div>
+    <div class="cover-body">
+      <div class="kick">${d.guide}</div>
+      <h1>${d.coverTitle}</h1>
+      <h2 style="font-size:clamp(17px,2.9vh,26px);margin-top:6px;opacity:.95">${d.coverSub}</h2>
+      <p style="color:var(--color-accent-100);margin-top:14px;font-size:clamp(13px,1.9vh,16px)">${d.coverBlurb}</p>
+    </div>
+  </div>`);
+  P.push(`<div class="pg" style="padding:0">
+    <div class="fitp">
+    <div class="kick">${d.fwKick}</div>
+    <h1 style="margin-top:8px">${d.fwTitle}</h1>
+    <hr class="rule">
+    <p class="lead">${d.fwLead}</p><p>${d.fwP2}</p><p>${d.fwP3}</p>
+    <div class="spill"></div>
+    </div>${num('i','l')}
+  </div>`);
+  P.push(`<div class="pg opener" style="background:var(--color-accent-100);padding:0">
+    <div class="fitp">
+    <img class="corner-logo onlight" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="kick">${d.tocKick}</div>
+    <h1 style="margin:6px 0 4px">${d.tocTitle}</h1>
+    <hr class="rule">
+    <div class="toc" style="margin-top:4px">${d.toc.map(x=>`<a data-go="${x.go}"><span class="t">${x.n} · ${x.t}</span><span class="d"></span><span class="p">${x.p}</span></a>`).join('')}${d.farm?`<a data-go="46"><span class="t">6 · ${d.farm.label}</span><span class="d"></span><span class="p">47</span></a>`:''}</div>
+    <p style="margin-top:auto;font-size:clamp(12px,1.8vh,15px)">${d.tocFoot}</p>
+    </div>${num('ii')}
+  </div>`);
+  P.push(`<div class="pg opener" style="padding:0"><div class="fitp">
+    <img class="corner-logo onlight" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="bignum">01</div>
+    <div class="kick" style="margin-top:6px">${d.c1Label}</div>
+    <h1 style="margin-top:6px">${d.c1Title}</h1>
+    <p style="margin-top:10px;color:var(--color-accent-2-700);font-style:italic">${d.c1Sub}</p>
+    ${chArt('ch1art')}
+    </div>${num('04','l')}
+  </div>`);
+  P.push(`<div class="pg" style="padding:0"><div class="fitp"><h2>${d.c1H}</h2><p class="lead">${d.c1Lead}</p><p>${d.c1P2}</p><p>${d.c1P3}</p></div>${num('05')}</div>`);
+  P.push(`<div class="pg quote">
+    <img class="fullbleed quote-wm" src="${__R('kitchen','assets/ch/kitchen.jpg')}" alt="">
+    <img class="corner-logo" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="kick">${d.q1Kick}</div>
+    <h2 style="margin-top:12px">${d.q1Quote}</h2>
+    <p style="margin-top:14px;color:var(--color-accent-200)">${d.q1Sub}</p>${num('06','l')}
+  </div>`);
+  P.push(openerHTML('02',d.c2Label,d.c2Title,d.c2Sub,'ch2art','07',null,'var(--color-accent-100)'));
+  P.push(`<div class="pg" style="padding:0"><div class="fitp"><h2>${d.c2H}</h2><p class="lead">${d.c2Lead}</p><p>${d.c2P2}</p><p>${d.c2P3}</p></div>${num('08')}</div>`);
+  P.push(`<div class="pg" style="padding:0">
+    <div style="position:relative;flex:1"><img class="fullbleed" src="${__R('cabbage','assets/ch/cabbage.jpg')}" alt="" style="object-position:50% 60%">
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:26px 30px;background:linear-gradient(0deg,rgba(64,35,16,.78),transparent);color:#fdf6ea;pointer-events:none">
+        <div class="kick" style="color:var(--color-accent-200)">${d.c2ImgKick}</div>
+        <h3 style="color:#fdf6ea;font-size:clamp(18px,3vh,26px);margin:4px 0 0">${d.c2ImgTitle}</h3>
+      </div>
+    </div>${num('09','l')}
+  </div>`);
+  P.push(openerHTML('03',d.c3Label,d.c3Title,d.c3Sub,'ch3art','10',null,'var(--color-accent-2-200)'));
+  P.push(`<div class="pg" style="padding:0"><div class="fitp"><h2>${d.c3H}</h2><p class="lead">${d.c3Lead}</p><p>${d.c3P2}</p><p>${d.c3P3}</p></div>${num('11')}</div>`);
+  P.push(`<div class="pg opener" style="background:var(--color-accent-2-100);padding:0">
+    <div class="fitp">
+    <img class="corner-logo onlight" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="kick">${d.c3StepKick}</div>
+    <h2 style="margin-top:8px">${d.c3StepTitle}</h2>
+    <hr class="rule">
+    <div class="cardgrid" style="grid-template-columns:1fr">${d.c3Steps.map(s=>`<div class="hcard"><div class="n">${s.t}</div><p>${s.b}</p></div>`).join('')}</div>
+    <p style="margin-top:auto;font-size:clamp(12px,1.8vh,15px)">${d.c3StepFoot}</p>
+    </div>${num('12','l')}
+  </div>`);
+  P.push(`<div class="pg opener" style="padding:0">
+    <div class="fitp">
+    <img class="corner-logo onlight" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="bignum">04</div>
+    <div class="kick" style="margin-top:6px">${d.c4Label}</div>
+    <h1 style="margin-top:6px">${d.c4Title}</h1>
+    <p style="margin-top:10px;color:var(--color-accent-2-700);font-style:italic">${d.c4Sub}</p>
+    <p style="margin-top:14px;max-width:76%">${d.c4Blurb}</p>
+    ${chArt('ch4art',50)}
+    </div><div class="num l">13</div>
+  </div>`);
+  d.herbs.forEach((it,k)=>{const lbl=P.length+1;window.__idx.push({pi:P.length,name:it.name,tags:it.t||[],cat:'herb'});P.push(itemPage(it,HERB_EN[k],k+1,'herb',lbl));});
+  P.push(`<div class="pg opener" style="background:var(--color-accent-100);padding:0">
+    <div class="fitp">
+    <img class="corner-logo onlight" src="${__R('logo','assets/kenko-logo.png')}" alt="">
+    <div class="bignum" style="color:var(--color-accent-300)">05</div>
+    <div class="kick" style="margin-top:6px">${d.c5Label}</div>
+    <h1 style="margin-top:6px">${d.c5Title}</h1>
+    <p style="margin-top:10px;color:var(--color-accent-700);font-style:italic">${d.c5Sub}</p>
+    <p style="margin-top:14px;max-width:76%">${d.c5Blurb}</p>
+    ${chArt('ch5art',50)}
+    </div><div class="num l">33</div>
+  </div>`);
+  d.foods.forEach((it,k)=>{const lbl=P.length+1;window.__idx.push({pi:P.length,name:it.name,tags:it.t||[],cat:'food'});P.push(itemPage(it,FOOD_EN[k],k+1,'food',lbl));});
+  if(d.farm){
+    const f=d.farm;
+    const photo=(img,cap,pnum)=>`<div class="pg photo"><img class="fullbleed" src="${__R(img.replace('.jpg',''),'assets/farm/'+img)}" alt=""><div class="photo-cap"><div class="kick">${f.label}</div><h3>${cap.t}</h3><p>${cap.s}</p></div><div class="num ${pnum%2?'':'l'}">${pnum}</div></div>`;
+    P.push(`<div class="pg photo"><img class="fullbleed" src="${__R('tea','assets/farm/tea.jpg')}" alt=""><div class="photo-scrim"></div><div class="photo-open"><div class="po-inner"><div class="kick">${f.label}</div><h1 style="margin-top:6px">${f.title}</h1><p style="margin-top:10px;color:#f1e9dc;font-style:italic">${f.sub}</p><p style="margin-top:12px;color:#f1e9dc;max-width:78%">${f.intro}</p></div></div><div class="num l" style="color:rgba(253,246,234,.75);z-index:2">47</div></div>`);
+    const imgs=['greenhouse1.jpg','seedlings.jpg','beetroot.jpg','greenhouse2.jpg','papaya.jpg','papaya_banana.jpg','corn.jpg'];
+    imgs.forEach((img,k)=>{P.push(photo(img,f.caps[k],P.length+1));});
+  }
+  P.push(`<div class="pg cover" style="background:linear-gradient(160deg,#3d472b 0%,#56633f 55%,#7a8a5e 100%);padding:0">
+    <div class="fitp" style="z-index:2">
+    <div class="logo-plate" style="position:relative;top:auto;left:auto;transform:none;align-self:center"><img src="${__R('logo','assets/kenko-logo.png')}" alt="Kenko 1st Organic"></div>
+    <div class="cover-body">
+      <div class="kick" style="color:var(--color-accent-2-200)">${d.closeKick}</div>
+      <h1 style="color:#fdf6ea">${d.closeTitle}</h1>
+      <p style="color:#f0fae1;margin-top:12px;font-style:italic">${d.closeTagline}</p>
+      <p style="color:#f0fae1;margin-top:8px">${d.closeBlurb}</p>
+      <div class="contact">
+        <div><span>${d.contact[0]}</span> 27/12, Rosmead Place, Colombo 07.</div>
+        <div><span>${d.contact[1]}</span> <a href="tel:+94715800800" style="color:inherit;text-decoration:none">0715 800 800</a></div>
+        <div><span>${d.contact[2]}</span> <a href="https://www.kenko1storganic.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">www.kenko1storganic.com</a></div>
+      </div>
+    </div>
+    </div>
+  </div>`);
+  return P;
+}
+
+let PAGES=buildPages();
+const elTop=document.getElementById('top'), elUnder=document.getElementById('under'), elTurn=document.getElementById('turn');
+const ind=document.getElementById('ind'), hintEl=document.getElementById('hint');
+let i=0, busy=false;
+
+function pageHTML(n){return (n>=0&&n<PAGES.length)?PAGES[n]:'';}
+function setSheet(el,n){const wm=el.querySelector('.wm'),spine=el.querySelector('.spine'),shade=el.querySelector('.turnshade');el.innerHTML='';if(wm)el.appendChild(wm);const d=document.createElement('div');d.innerHTML=pageHTML(n);while(d.firstChild)el.appendChild(d.firstChild);if(shade)el.appendChild(shade);if(spine)el.appendChild(spine);fitPage(el);}
+function fitPage(el){el.querySelectorAll('.fit,.fitp').forEach(fit=>{fit.style.transform='none';const isP=fit.classList.contains('fitp');const reserve=isP?(parseFloat(getComputedStyle(fit).paddingBottom)||0):22;const avail=fit.clientHeight-reserve;const ft=fit.getBoundingClientRect().top;let nat=0;[...fit.children].forEach(c=>{if(getComputedStyle(c).position==='absolute')return;nat=Math.max(nat,c.getBoundingClientRect().bottom-ft+(parseFloat(getComputedStyle(c).marginBottom)||0)*0);});if(nat>avail+0.5)fit.style.transform='scale('+Math.max(0.5,avail/nat)+')';});const po=el.querySelector('.po-inner');if(po){po.style.transform='none';po.style.transformOrigin='bottom center';const par=po.parentElement,cs=getComputedStyle(par);let a=par.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);[...par.children].forEach(c=>{if(c!==po&&getComputedStyle(c).position!=='absolute')a-=c.offsetHeight+12;});const n=po.offsetHeight;if(n>a+0.5)po.style.transform='scale('+Math.max(0.5,a/n)+')';}}
+function render(){setSheet(elTop,i);setSheet(elUnder,i+1<PAGES.length?i+1:i);ind.textContent=(i+1)+' / '+PAGES.length;wireTOC();}
+function wireTOC(){elTop.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{const t=+a.dataset.go;if(t>i)jumpForward(t);});}
+function jumpForward(t){if(busy||t<=i)return;i=Math.min(t,PAGES.length-1);render();}
+
+function next(){
+  if(busy||i>=PAGES.length-1)return;busy=true;
+  setSheet(elUnder,i+1);setSheet(elTurn,i);
+  elTurn.classList.remove('back','go');elTurn.style.display='block';
+  void elTurn.offsetWidth;elTurn.classList.add('go');
+  setTimeout(()=>{i++;render();elTurn.classList.remove('go');elTurn.style.display='none';busy=false;},640);
+}
+function prev(){
+  if(busy||i<=0)return;busy=true;
+  setSheet(elTurn,i-1);setSheet(elUnder,i);setSheet(elTop,i-1);
+  elTurn.classList.add('back');elTurn.style.display='block';elTurn.classList.remove('go');
+  void elTurn.offsetWidth;elTurn.classList.add('go');
+  setTimeout(()=>{i--;render();elTurn.classList.remove('go','back');elTurn.style.display='none';busy=false;},640);
+}
+elTurn.style.display='none';
+document.getElementById('next').onclick=next;
+document.getElementById('prev').onclick=prev;
+document.getElementById('zNext').onclick=next;
+document.getElementById('zPrev').onclick=prev;
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();});
+
+const SEARCH_PH={si:'නමකින් හෝ ගුණයකින් සොයන්න…',en:'Search by name or benefit…',ta:'பெயர் அல்லது நலனால் தேடுங்கள்…',ja:'名前や効きめで検索…'};
+const searchOv=document.getElementById('searchOv'),searchInput=document.getElementById('searchInput'),searchResults=document.getElementById('searchResults');
+function renderResults(q){
+  q=(q||'').trim().toLowerCase();
+  const items=window.__idx||[];
+  const out=items.filter(it=>!q||it.name.toLowerCase().includes(q)||it.tags.some(t=>t.toLowerCase().includes(q)));
+  if(!out.length){searchResults.innerHTML='<div class="search-empty">—</div>';return;}
+  searchResults.innerHTML=out.map(it=>`<a class="sres ${it.cat==='food'?'f':''}" data-pi="${it.pi}"><span class="cat">${it.cat==='herb'?L().itemHerbCat:L().itemFoodCat}</span><span class="nm">${it.name}</span><span class="tg">${it.tags.slice(0,2).join(' · ')}</span><span class="pn">${it.pi+1}</span></a>`).join('');
+  searchResults.querySelectorAll('.sres').forEach(a=>a.onclick=()=>{i=+a.dataset.pi;render();closeSearch();});
+}
+function openSearch(){searchInput.placeholder=SEARCH_PH[lang]||SEARCH_PH.en;searchInput.value='';renderResults('');searchOv.classList.add('open');setTimeout(()=>searchInput.focus(),40);}
+function closeSearch(){searchOv.classList.remove('open');}
+document.getElementById('searchBtn').onclick=openSearch;
+document.getElementById('searchClose').onclick=closeSearch;
+searchInput.addEventListener('input',()=>renderResults(searchInput.value));
+searchOv.addEventListener('click',e=>{if(e.target===searchOv)closeSearch();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch();});
+const refit=()=>{['top','under'].forEach(id=>{const el=document.getElementById(id);if(el)fitPage(el);});};
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(refit);
+window.addEventListener('load',refit);
+let __rz;window.addEventListener('resize',()=>{clearTimeout(__rz);__rz=setTimeout(refit,120);});
+
+function setLang(l){
+  if(!BOOK[l]||l===lang)return;
+  lang=l;try{localStorage.setItem('ebook_lang',l)}catch(e){}
+  document.documentElement.lang=l;
+  PAGES=buildPages();
+  if(i>=PAGES.length)i=PAGES.length-1;
+  hintEl.textContent=L().hint;
+  document.querySelectorAll('.langbtn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  render();
+}
+(function buildLangBar(){
+  const bar=document.getElementById('langbar');
+  LANG_ORDER.forEach(l=>{if(!BOOK[l])return;const b=document.createElement('button');b.className='langbtn'+(l===lang?' active':'');b.dataset.lang=l;b.textContent=LANG_NAMES[l];b.onclick=()=>setLang(l);bar.appendChild(b);});
+})();
+
+document.documentElement.lang=lang;
+hintEl.textContent=L().hint;
+try{const s=+localStorage.getItem('ebook_pg');if(s>=0&&s<PAGES.length)i=s;}catch(e){}
+let rT;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(render,120);});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>render());
+const save=()=>{try{localStorage.setItem('ebook_pg',i)}catch(e){}};
+['click','keydown'].forEach(ev=>document.addEventListener(ev,()=>setTimeout(save,700)));
+render();
+</script>
+</body>
+</html>
