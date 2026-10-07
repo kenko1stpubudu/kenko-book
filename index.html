@@ -248,8 +248,6 @@ a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-900)}
 <meta name="ext-resource-dependency" content="assets/items/herb_4.jpg" data-resource-id="it_herb_4">
 <meta name="ext-resource-dependency" content="assets/ch/cabbage.jpg" data-resource-id="cabbage">
 <meta name="ext-resource-dependency" content="assets/ch/kitchen.jpg" data-resource-id="kitchen">
-<meta name="ext-resource-dependency" content="assets/cert/pgs.jpg" data-resource-id="cert_pgs">
-<meta name="ext-resource-dependency" content="assets/cert/award.jpg" data-resource-id="cert_award">
 <script>window.__R=(k,p)=>(window.__resources&&window.__resources[k])||p;</script>
 </head>
 <body>
@@ -357,7 +355,7 @@ function buildPages(){
     <h1 style="margin-top:8px">${d.promKick}</h1>
     <hr class="rule" style="background:var(--color-accent-2)">
     <p class="lead">${d.fwOrg}</p>
-    <div class="certs">${[['cert_pgs','assets/cert/pgs.jpg'],['cert_award','assets/cert/award.jpg']].map((c,k)=>`<button class="certbtn" data-full="${__R(c[0],c[1])}" aria-label="${d.certCap[k]}"><figure><img src="${__R(c[0],c[1])}" alt=""><figcaption>${d.certCap[k]}</figcaption></figure></button>`).join('')}</div>
+    
     </div></div>`);
   P.push(`<div class="pg opener" style="background:var(--color-accent-100);padding:0">
     <div class="fitp">
